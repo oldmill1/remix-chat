@@ -9,14 +9,13 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const [currX, setCurrX] = React.useState(0);
+  const [currY, setCurrY] = React.useState(0);
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const x = e.clientX;
     const y = e.clientY;
-    console.log({ x, y });
+    setCurrX(x);
+    setCurrY(y);
   }
-  return (
-    <div onClick={handleClick} className="universe" id='universe'>
-      Hello world
-    </div>
-  );
+  return <div onClick={handleClick} className='universe' id='universe'></div>;
 }
