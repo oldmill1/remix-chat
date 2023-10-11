@@ -16,6 +16,7 @@ export default function Index() {
     const y = e.clientY;
     setCurrX(x);
     setCurrY(y);
+    openPromptBoxAtLocation();
   }
   return <div onClick={handleClick} className='universe' id='universe'></div>;
 }
