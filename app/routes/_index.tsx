@@ -27,17 +27,23 @@ export default function Index() {
   }
   console.log({ prompts });
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (mode === 'edit') return;
-    const x = e.clientX;
-    const y = e.clientY;
-    openPromptBoxAtLocation(x, y);
-    setMode('edit');
+    if (mode === 'edit') {
+      focusLastRef();
+    } else if (mode === 'view') {
+      const x = e.clientX;
+      const y = e.clientY;
+      openPromptBoxAtLocation(x, y);
+      setMode('edit');
+      focusLastRef();
+    }
+  }
+  function focusLastRef() {
+    console.log({ promptRefs });
     const lastRef = promptRefs.current[promptRefs.current.length - 1];
     if (lastRef) {
       lastRef.current?.focus();
     }
   }
-  console.log({ promptRefs });
   return (
     <div onClick={handleClick} className='universe' id='universe'>
       {prompts &&
@@ -50,7 +56,7 @@ export default function Index() {
               top: `${prompt.y}px`,
             }}
           >
-            <input type='text' autoFocus />
+            <input type='text' ref={promptRefs.current[index]} autoFocus />
           </div>
         ))}
     </div>
