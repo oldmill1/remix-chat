@@ -9,14 +9,19 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const [currX, setCurrX] = React.useState(0);
-  const [currY, setCurrY] = React.useState(0);
+  const [prompts, setPrompts] = React.useState<{ x: number; y: number }[]>([]);
+  function openPromptBoxAtLocation(x, y) {
+    const newPrompt = {
+      x,
+      y,
+    };
+    setPrompts((prompts) => [...prompts, newPrompt]);
+  }
+  console.log({ prompts });
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const x = e.clientX;
     const y = e.clientY;
-    setCurrX(x);
-    setCurrY(y);
-    openPromptBoxAtLocation();
+    openPromptBoxAtLocation(x, y);
   }
   return <div onClick={handleClick} className='universe' id='universe'></div>;
 }
