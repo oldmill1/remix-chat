@@ -8,8 +8,26 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+interface Prompt {
+  x: number;
+  y: number;
+}
+
+type PromptAction =
+  | { type: 'ADD_PROMPT'; payload: Prompt }
+  | { type: 'REMOVE_PROMPT'; payload: number };
+
+const promptReducer = (state: Prompt[], action: PromptAction) => {
+  switch (action.type) {
+    case 'ADD_PROMPT':
+      return [...state, action.payload];
+    default:
+      return state;
+  }
+};
+
 export default function Index() {
-  const [prompts, setPrompts] = React.useState<{ x: number; y: number }[]>([]);
+  const [prompts, dispatch] = React.useReducer(promptReducer, []);
   const [mode, setMode] = React.useState<'view' | 'edit'>('view');
   const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
   function openPromptBoxAtLocation(x: number, y: number) {
@@ -17,13 +35,11 @@ export default function Index() {
       x,
       y,
     };
-    setPrompts((prevPrompts) => {
-      const newPrompts = [...prevPrompts, newPrompt];
-      promptRefs.current = new Array(newPrompts.length)
-        .fill(null)
-        .map((_, i) => promptRefs.current[i] || React.createRef());
-      return newPrompts;
-    });
+    dispatch({ type: 'ADD_PROMPT', payload: newPrompt });
+    // Update refs
+    promptRefs.current = new Array(prompts.length + 1)
+      .fill(null)
+      .map((_, i) => promptRefs.current[i] || React.createRef());
   }
   console.log({ prompts });
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
