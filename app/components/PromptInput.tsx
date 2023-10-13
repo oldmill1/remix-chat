@@ -7,11 +7,13 @@ function PromptInput({
   promptRefs,
   setPromptText,
   promptText,
+  switchToFullScreen,
 }: {
   prompt: IPrompt;
   index: number;
   promptText: string;
   setPromptText: (newPromptText: string) => void;
+  switchToFullScreen: () => void;
   promptRefs: React.MutableRefObject<
     (React.RefObject<HTMLInputElement> | null)[]
   >;
@@ -28,6 +30,9 @@ function PromptInput({
       newWidth = 500;
     }
     setWidth(newWidth);
+    if (charsTyped > 49) {
+      switchToFullScreen();
+    }
   }, [charsTyped]);
   return (
     <div

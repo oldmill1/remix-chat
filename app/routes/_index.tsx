@@ -28,6 +28,7 @@ export default function Index() {
   const [mode, setMode] = React.useState<'view' | 'edit'>('view');
   const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
   const [promptText, setPromptText] = React.useState('');
+  const [isFullScreen, setIsFullScreen] = React.useState(false);
   function createPrompt(x: number, y: number) {
     const newPrompt = {
       x,
@@ -59,12 +60,16 @@ export default function Index() {
       lastRef.current?.focus();
     }
   }
+  function switchToFullScreen() {
+    setIsFullScreen(true);
+  }
   return (
     <div onClick={handleClick} className='universe' id='universe'>
-      <div data-testid='full-screen'>
-        <h1>Full screen header</h1>
-        <p>some sort of texts</p>
-      </div>
+      {isFullScreen && (
+        <div data-testid='full-screen'>
+          <p>{promptText}</p>
+        </div>
+      )}
       {prompts &&
         prompts.map((prompt, index) => (
           <PromptInput
@@ -74,6 +79,7 @@ export default function Index() {
             promptRefs={promptRefs}
             promptText={promptText}
             setPromptText={handleChange}
+            switchToFullScreen={switchToFullScreen}
           />
         ))}
     </div>
