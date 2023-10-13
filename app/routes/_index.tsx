@@ -61,6 +61,10 @@ export default function Index() {
   }
   return (
     <div onClick={handleClick} className='universe' id='universe'>
+      <div data-testid='full-screen'>
+        <h1>Full screen header</h1>
+        <p>some sort of texts</p>
+      </div>
       {prompts &&
         prompts.map((prompt, index) => (
           <PromptInput

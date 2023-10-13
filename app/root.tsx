@@ -13,6 +13,7 @@ import universeStylesHref from './universe.css';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: '/styles/globals.css' },
+  { rel: 'stylesheet', href: '/styles/reset.css' },
   { rel: 'stylesheet', href: universeStylesHref },
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
 ];
