@@ -1,5 +1,6 @@
 import type { MetaFunction } from '@remix-run/node';
 import React, { useRef } from 'react';
+import PromptInput from '~/components/PromptInput';
 
 export const meta: MetaFunction = () => {
   return [
@@ -41,7 +42,6 @@ export default function Index() {
       .fill(null)
       .map((_, i) => promptRefs.current[i] || React.createRef());
   }
-  console.log({ prompts });
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (mode === 'edit') {
       focusLastRef();
@@ -64,16 +64,12 @@ export default function Index() {
     <div onClick={handleClick} className='universe' id='universe'>
       {prompts &&
         prompts.map((prompt, index) => (
-          <div
+          <PromptInput
             key={index}
-            style={{
-              position: 'absolute',
-              left: `${prompt.x}px`,
-              top: `${prompt.y}px`,
-            }}
-          >
-            <input type='text' ref={promptRefs.current[index]} autoFocus />
-          </div>
+            index={index}
+            prompt={prompt}
+            promptRefs={promptRefs}
+          />
         ))}
     </div>
   );
