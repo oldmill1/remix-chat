@@ -9,7 +9,7 @@ import {
   ScrollRestoration,
 } from '@remix-run/react';
 
-import universeStylesHref from './universe.css';
+import universeStylesHref from '~/styles/universe.css';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: '/styles/globals.css' },
