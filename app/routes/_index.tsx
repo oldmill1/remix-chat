@@ -1,6 +1,7 @@
 import type { MetaFunction } from '@remix-run/node';
 import React, { useRef } from 'react';
 import PromptInput from '~/components/PromptInput';
+import type { IPrompt } from '~/types';
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,16 +10,11 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-interface Prompt {
-  x: number;
-  y: number;
-}
-
 type PromptAction =
-  | { type: 'ADD_PROMPT'; payload: Prompt }
+  | { type: 'ADD_PROMPT'; payload: IPrompt }
   | { type: 'REMOVE_PROMPT'; payload: number };
 
-const promptReducer = (state: Prompt[], action: PromptAction) => {
+const promptReducer = (state: IPrompt[], action: PromptAction) => {
   switch (action.type) {
     case 'ADD_PROMPT':
       return [...state, action.payload];

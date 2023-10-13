@@ -1,16 +1,12 @@
 import React from 'react';
-
-interface Prompt {
-  x: number;
-  y: number;
-}
+import type { IPrompt } from '~/types';
 
 function PromptInput({
   prompt,
   index,
   promptRefs,
 }: {
-  prompt: Prompt;
+  prompt: IPrompt;
   index: number;
   promptRefs: React.MutableRefObject<
     (React.RefObject<HTMLInputElement> | null)[]
