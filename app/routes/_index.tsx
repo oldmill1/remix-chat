@@ -27,7 +27,7 @@ export default function Index() {
   const [prompts, dispatch] = React.useReducer(promptReducer, []);
   const [mode, setMode] = React.useState<'view' | 'edit'>('view');
   const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
-  function openPromptBoxAtLocation(x: number, y: number) {
+  function createPrompt(x: number, y: number) {
     const newPrompt = {
       x,
       y,
@@ -44,13 +44,12 @@ export default function Index() {
     } else if (mode === 'view') {
       const x = e.clientX;
       const y = e.clientY;
-      openPromptBoxAtLocation(x, y);
+      createPrompt(x, y);
       setMode('edit');
       focusLastRef();
     }
   }
   function focusLastRef() {
-    console.log({ promptRefs });
     const lastRef = promptRefs.current[promptRefs.current.length - 1];
     if (lastRef) {
       lastRef.current?.focus();
