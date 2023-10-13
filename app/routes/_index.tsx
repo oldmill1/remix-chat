@@ -27,6 +27,7 @@ export default function Index() {
   const [prompts, dispatch] = React.useReducer(promptReducer, []);
   const [mode, setMode] = React.useState<'view' | 'edit'>('view');
   const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
+  const [promptText, setPromptText] = React.useState('');
   function createPrompt(x: number, y: number) {
     const newPrompt = {
       x,
@@ -49,6 +50,9 @@ export default function Index() {
       focusLastRef();
     }
   }
+  function handleChange(newPromptText: string) {
+    setPromptText(newPromptText);
+  }
   function focusLastRef() {
     const lastRef = promptRefs.current[promptRefs.current.length - 1];
     if (lastRef) {
@@ -64,6 +68,8 @@ export default function Index() {
             index={index}
             prompt={prompt}
             promptRefs={promptRefs}
+            promptText={promptText}
+            setPromptText={handleChange}
           />
         ))}
     </div>
