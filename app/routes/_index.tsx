@@ -1,7 +1,11 @@
 import type { MetaFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+
 import React, { useRef } from 'react';
 import PromptInput from '~/components/PromptInput';
+import { useLoaderData } from '@remix-run/react';
 import type { IPrompt } from '~/types';
+import { getPrompts } from '~/data';
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,6 +18,11 @@ type PromptAction =
   | { type: 'ADD_PROMPT'; payload: IPrompt }
   | { type: 'REMOVE_PROMPT'; payload: number };
 
+export const loader = async () => {
+  const fakePrompts = await getPrompts();
+  return json({ fakePrompts });
+};
+
 const promptReducer = (state: IPrompt[], action: PromptAction) => {
   switch (action.type) {
     case 'ADD_PROMPT':
@@ -24,6 +33,8 @@ const promptReducer = (state: IPrompt[], action: PromptAction) => {
 };
 
 export default function Index() {
+  const { fakePrompts } = useLoaderData<typeof loader>();
+  console.log({ fakePrompts });
   const [prompts, dispatch] = React.useReducer(promptReducer, []);
   const [mode, setMode] = React.useState<'view' | 'edit'>('view');
   const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
@@ -66,11 +77,12 @@ export default function Index() {
   return (
     <div onClick={handleClick} className='universe' id='universe'>
       {isFullScreen && (
-        <div data-testid='full-screen'>
+        <div className='full-screen' data-testid='full-screen'>
           <p>{promptText}</p>
         </div>
       )}
       {prompts &&
+        !isFullScreen &&
         prompts.map((prompt, index) => (
           <PromptInput
             key={index}

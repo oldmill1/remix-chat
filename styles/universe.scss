@@ -4,4 +4,31 @@
   position: relative;
   top: 0;
   left: 0;
+  background: #0E1012;
+
+  .full-screen {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: 100%;
+    background: #0E1012;
+    color: #70c1b7;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 2rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    box-shadow:
+      inset 0 0 1em #1c4663,
+      0 0 1em #1c4663;
+
+    p {
+      margin: 0;
+      padding: 1rem;
+      line-height: 1.5;
+    }
+  }
 }

@@ -12,6 +12,10 @@ import {
 import universeStylesHref from '~/styles/universe.css';
 
 export const links: LinksFunction = () => [
+  {
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200;300&display=swap',
+  },
   { rel: 'stylesheet', href: '/styles/globals.css' },
   { rel: 'stylesheet', href: '/styles/reset.css' },
   { rel: 'stylesheet', href: universeStylesHref },
