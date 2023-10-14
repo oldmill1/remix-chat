@@ -4,8 +4,8 @@ import { json } from '@remix-run/node';
 import React, { useRef } from 'react';
 import PromptInput from '~/components/PromptInput';
 import { useLoaderData } from '@remix-run/react';
-import type { IPrompt } from '~/types';
 import { getPrompts } from '~/data';
+import { promptReducer } from '~/store/reducers';
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,28 +14,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-type PromptAction =
-  | { type: 'ADD_PROMPT'; payload: IPrompt }
-  | { type: 'REMOVE_PROMPT'; payload: number };
-
 export const loader = async () => {
   const fakePrompts = await getPrompts();
   return json({ fakePrompts });
 };
 
-const promptReducer = (state: IPrompt[], action: PromptAction) => {
-  switch (action.type) {
-    case 'ADD_PROMPT':
-      return [...state, action.payload];
-    default:
-      return state;
-  }
-};
-
 export default function Index() {
   const { fakePrompts } = useLoaderData<typeof loader>();
   const [prompts, dispatch] = React.useReducer(promptReducer, []);
-  const [mode, setMode] = React.useState<'view' | 'edit'>('view');
   const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
   const [promptText, setPromptText] = React.useState('');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
@@ -53,10 +39,6 @@ export default function Index() {
   const initialPromptsLoadedRef = React.useRef(false);
 
   React.useEffect(() => {
-    console.log('Running useEffect');
-    console.log('initialPromptsLoaded:', initialPromptsLoadedRef.current);
-    console.log('fakePrompts:', fakePrompts);
-
     if (!initialPromptsLoadedRef.current && fakePrompts) {
       fakePrompts.forEach((prompt) => {
         if (prompt.x && prompt.y) {
@@ -68,31 +50,16 @@ export default function Index() {
         }
       });
       initialPromptsLoadedRef.current = true; // Set the flag to true after loading initial prompts
-      console.log('Set initialPromptsLoaded to true');
     }
   }, [fakePrompts]);
 
-  console.log({ prompts });
-
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    if (mode === 'edit') {
-      focusLastRef();
-    } else if (mode === 'view') {
-      const x = e.clientX;
-      const y = e.clientY;
-      createPrompt(x, y);
-      setMode('edit');
-      focusLastRef();
-    }
+    const x = e.clientX;
+    const y = e.clientY;
+    createPrompt(x, y);
   }
   function handleChange(newPromptText: string) {
     setPromptText(newPromptText);
-  }
-  function focusLastRef() {
-    const lastRef = promptRefs.current[promptRefs.current.length - 1];
-    if (lastRef) {
-      lastRef.current?.focus();
-    }
   }
   function switchToFullScreen() {
     setIsFullScreen(true);
