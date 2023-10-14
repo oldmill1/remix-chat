@@ -34,23 +34,46 @@ const promptReducer = (state: IPrompt[], action: PromptAction) => {
 
 export default function Index() {
   const { fakePrompts } = useLoaderData<typeof loader>();
-  console.log({ fakePrompts });
   const [prompts, dispatch] = React.useReducer(promptReducer, []);
   const [mode, setMode] = React.useState<'view' | 'edit'>('view');
   const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
   const [promptText, setPromptText] = React.useState('');
   const [isFullScreen, setIsFullScreen] = React.useState(false);
-  function createPrompt(x: number, y: number) {
-    const newPrompt = {
-      x,
-      y,
-    };
-    dispatch({ type: 'ADD_PROMPT', payload: newPrompt });
-    // Update refs
-    promptRefs.current = new Array(prompts.length + 1)
-      .fill(null)
-      .map((_, i) => promptRefs.current[i] || React.createRef());
-  }
+
+  const createPrompt = React.useCallback(
+    (x: number, y: number) => {
+      const newPrompt = {
+        x,
+        y,
+      };
+      dispatch({ type: 'ADD_PROMPT', payload: newPrompt });
+    },
+    [dispatch],
+  );
+  const initialPromptsLoadedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    console.log('Running useEffect');
+    console.log('initialPromptsLoaded:', initialPromptsLoadedRef.current);
+    console.log('fakePrompts:', fakePrompts);
+
+    if (!initialPromptsLoadedRef.current && fakePrompts) {
+      fakePrompts.forEach((prompt) => {
+        if (prompt.x && prompt.y) {
+          console.log('Dispatching add prompt:', prompt);
+          dispatch({
+            type: 'ADD_PROMPT',
+            payload: { x: prompt.x, y: prompt.y },
+          });
+        }
+      });
+      initialPromptsLoadedRef.current = true; // Set the flag to true after loading initial prompts
+      console.log('Set initialPromptsLoaded to true');
+    }
+  }, [fakePrompts]);
+
+  console.log({ prompts });
+
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (mode === 'edit') {
       focusLastRef();
