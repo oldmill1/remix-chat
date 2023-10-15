@@ -42,7 +42,6 @@ export default function Index() {
     if (!initialPromptsLoadedRef.current && fakePrompts) {
       fakePrompts.forEach((prompt) => {
         if (prompt.x && prompt.y) {
-          console.log('Dispatching add prompt:', prompt);
           dispatch({
             type: 'ADD_PROMPT',
             payload: { x: prompt.x, y: prompt.y },
@@ -56,7 +55,7 @@ export default function Index() {
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const x = e.clientX;
     const y = e.clientY;
-    createPrompt(x, y);
+    //createPrompt(x, y);
   }
   function handleChange(newPromptText: string) {
     setPromptText(newPromptText);
@@ -65,7 +64,11 @@ export default function Index() {
     setIsFullScreen(true);
   }
   return (
-    <div onClick={handleClick} className='universe' id='universe'>
+    <div
+      onClick={handleClick}
+      className='universe'
+      id='universe'
+    >
       {isFullScreen && (
         <div className='full-screen' data-testid='full-screen'>
           <p>{promptText}</p>

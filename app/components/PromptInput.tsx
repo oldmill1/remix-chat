@@ -18,6 +18,11 @@ function PromptInput({
     (React.RefObject<HTMLInputElement> | null)[]
   >;
 }) {
+  const [left, setLeft] = React.useState(prompt.x);
+  const [top, setTop] = React.useState(prompt.y);
+  const [origin, setOrigin] = React.useState<{ x: number; y: number } | null>(
+    null,
+  );
   const [width, setWidth] = React.useState(100);
   const [charsTyped, setCharsTyped] = React.useState(0);
 
@@ -39,8 +44,8 @@ function PromptInput({
       key={index}
       style={{
         position: 'absolute',
-        left: `${prompt.x}px`,
-        top: `${prompt.y}px`,
+        left: `${left}px`,
+        top: `${top}px`,
       }}
     >
       <input
@@ -49,6 +54,39 @@ function PromptInput({
         ref={promptRefs.current[index]}
         autoFocus
         value={promptText}
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          setOrigin({
+            x: e.clientX,
+            y: e.clientY,
+          });
+        }}
+        onMouseUp={(e) => {
+          e.stopPropagation();
+          setOrigin(null);
+        }}
+        onMouseMove={(e) => {
+          e.stopPropagation();
+          const startX = origin?.x;
+          const startY = origin?.y;
+          const currentX = e.clientX;
+          const currentY = e.clientY;
+
+          if (startX && startY) {
+            const distanceX = currentX - startX;
+            const distanceY = currentY - startY;
+            const newLeft = left + distanceX;
+            const newTop = top + distanceY;
+            setLeft(newLeft);
+            setTop(newTop);
+
+            // Update the origin to the new position for the next calculation
+            setOrigin({
+              x: e.clientX,
+              y: e.clientY,
+            });
+          }
+        }}
         onChange={(e) => {
           // Set the prompt text
           setPromptText(e.target.value);
