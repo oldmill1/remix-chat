@@ -1,11 +1,11 @@
 import type { MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import PromptInput from '~/components/PromptInput';
 import { useLoaderData } from '@remix-run/react';
 import { getPrompts } from '~/data';
-import { promptReducer } from '~/store/reducers';
+import { promptReducer, addPrompt } from '~/store/reducers';
 
 export const meta: MetaFunction = () => {
   return [
@@ -15,77 +15,46 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async () => {
-  const fakePrompts = await getPrompts();
-  return json({ fakePrompts });
+  const rawPrompts = await getPrompts();
+  return json({ rawPrompts });
 };
 
 export default function Index() {
-  const { fakePrompts } = useLoaderData<typeof loader>();
-  const [prompts, dispatch] = React.useReducer(promptReducer, []);
-  const promptRefs = useRef<(React.RefObject<HTMLInputElement> | null)[]>([]);
-  const [promptText, setPromptText] = React.useState('');
+  // This is the raw data
+  const { rawPrompts } = useLoaderData<typeof loader>();
+  // This is the data that will be used to render the prompts
   const [isFullScreen, setIsFullScreen] = React.useState(false);
-
-  const createPrompt = React.useCallback(
-    (x: number, y: number) => {
-      const newPrompt = {
-        x,
-        y,
-      };
-      dispatch({ type: 'ADD_PROMPT', payload: newPrompt });
-    },
-    [dispatch],
-  );
+  const [prompts, dispatch] = React.useReducer(promptReducer, []);
   const initialPromptsLoadedRef = React.useRef(false);
 
   React.useEffect(() => {
-    if (!initialPromptsLoadedRef.current && fakePrompts) {
-      fakePrompts.forEach((prompt) => {
+    if (!initialPromptsLoadedRef.current && rawPrompts) {
+      rawPrompts.forEach((prompt) => {
         if (prompt.x && prompt.y) {
-          dispatch({
-            type: 'ADD_PROMPT',
-            payload: { x: prompt.x, y: prompt.y },
-          });
+          dispatch(addPrompt({ x: prompt.x, y: prompt.y, id: prompt.id }));
         }
       });
       initialPromptsLoadedRef.current = true; // Set the flag to true after loading initial prompts
     }
-  }, [fakePrompts]);
+  }, [rawPrompts]);
 
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const x = e.clientX;
     const y = e.clientY;
     //createPrompt(x, y);
   }
-  function handleChange(newPromptText: string) {
-    setPromptText(newPromptText);
-  }
-  function switchToFullScreen() {
-    setIsFullScreen(true);
-  }
+  console.log({ prompts });
   return (
-    <div
-      onClick={handleClick}
-      className='universe'
-      id='universe'
-    >
+    <div onClick={handleClick} className='universe' id='universe'>
       {isFullScreen && (
         <div className='full-screen' data-testid='full-screen'>
-          <p>{promptText}</p>
+          <p>Something</p>
         </div>
       )}
       {prompts &&
         !isFullScreen &&
         prompts.map((prompt, index) => (
-          <PromptInput
-            key={index}
-            index={index}
-            prompt={prompt}
-            promptRefs={promptRefs}
-            promptText={promptText}
-            setPromptText={handleChange}
-            switchToFullScreen={switchToFullScreen}
-          />
+          <PromptInput key={index} index={index} prompt={prompt} />
         ))}
     </div>
   );

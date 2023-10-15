@@ -4,19 +4,9 @@ import type { IPrompt } from '~/types';
 function PromptInput({
   prompt,
   index,
-  promptRefs,
-  setPromptText,
-  promptText,
-  switchToFullScreen,
 }: {
   prompt: IPrompt;
   index: number;
-  promptText: string;
-  setPromptText: (newPromptText: string) => void;
-  switchToFullScreen: () => void;
-  promptRefs: React.MutableRefObject<
-    (React.RefObject<HTMLInputElement> | null)[]
-  >;
 }) {
   const [left, setLeft] = React.useState(prompt.x);
   const [top, setTop] = React.useState(prompt.y);
@@ -35,9 +25,9 @@ function PromptInput({
       newWidth = 500;
     }
     setWidth(newWidth);
-    if (charsTyped > 49) {
-      switchToFullScreen();
-    }
+    // if (charsTyped > 49) {
+    //   switchToFullScreen();
+    // }
   }, [charsTyped]);
   return (
     <div
@@ -51,9 +41,7 @@ function PromptInput({
       <input
         style={{ width: `${width}px` }}
         type='text'
-        ref={promptRefs.current[index]}
         autoFocus
-        value={promptText}
         onMouseDown={(e) => {
           e.stopPropagation();
           setOrigin({
@@ -88,8 +76,6 @@ function PromptInput({
           }
         }}
         onChange={(e) => {
-          // Set the prompt text
-          setPromptText(e.target.value);
           // Set the width of the input based
           // on the length of the text
           const inputLength = e.target.value.length;

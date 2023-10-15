@@ -2,6 +2,7 @@ import { matchSorter } from 'match-sorter';
 // @ts-ignore - no types, but it's a tiny function
 import sortBy from 'sort-by';
 import invariant from 'tiny-invariant';
+import { v4 as uuidv4 } from 'uuid';
 
 type PromptMutation = {
   id?: string;
@@ -122,6 +123,6 @@ export async function deletePrompt(id: string) {
 ].forEach((prompt) => {
   fakePrompts.create({
     ...prompt,
-    id: `${prompt.promptText}-${prompt.x}-${prompt.y}`,
+    id: uuidv4(),
   });
 });
