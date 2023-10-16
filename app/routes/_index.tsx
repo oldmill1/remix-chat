@@ -19,27 +19,27 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const action = async ({ params, request }: ActionFunctionArgs) => {
-  console.log('Action function called');
-  invariant(params.promptId, 'Missing promptId param');
-  const formData = await request.formData();
-  const x = Number(formData.get('x'));
-  const y = Number(formData.get('y'));
-
-  if (isNaN(x) || isNaN(y)) {
-    return new Response('Invalid x or y', { status: 400 });
-  }
-
-  await updatePrompt(params.promptId, { x, y });
-  return new Response(null, { status: 200 });
-};
+// export const action = async ({ params, request }: ActionFunctionArgs) => {
+//   console.log('Action function called');
+//   invariant(params.promptId, 'Missing promptId param');
+//   const formData = await request.formData();
+//   const x = Number(formData.get('x'));
+//   const y = Number(formData.get('y'));
+//
+//   if (isNaN(x) || isNaN(y)) {
+//     return new Response('Invalid x or y', { status: 400 });
+//   }
+//
+//   await updatePrompt(params.promptId, { x, y });
+//   return new Response(null, { status: 200 });
+// };
 
 export const loader = async () => {
   const rawPrompts = await getPrompts();
   return json({ rawPrompts });
 };
 
-export default function Index() {
+export default function _index() {
   // This is the raw data
   const { rawPrompts } = useLoaderData<typeof loader>();
   // This is the data that will be used to render the prompts
@@ -69,7 +69,7 @@ export default function Index() {
     const y = e.clientY;
     //createPrompt(x, y);
   }
-  console.log({ prompts, selectedId });
+  console.log({ rawPrompts, prompts, selectedId });
   return (
     <div onClick={handleClick} className='universe' id='universe'>
       {isFullScreen && (
@@ -107,8 +107,6 @@ export default function Index() {
       >
         Hello
       </button>
-      This way, the dispatch will only be executed if the fetch request returns
-      a successful response (HTTP status in the range 200-299).
       {prompts &&
         !isFullScreen &&
         prompts.map((prompt, index) => (

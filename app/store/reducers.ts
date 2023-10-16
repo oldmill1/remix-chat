@@ -7,6 +7,19 @@ export const addPrompt = (payload: { x: number; y: number; id: string }) => ({
   payload,
 });
 
+export const updatePromptPosition = ({
+  id,
+  x,
+  y,
+}: {
+  id: string;
+  x: number;
+  y: number;
+}) => ({
+  type: UPDATE_PROMPT_POSITION,
+  payload: { id, x, y },
+});
+
 export const promptReducer = (state: IPrompt[], action: PromptAction) => {
   switch (action.type) {
     case ADD_PROMPT:

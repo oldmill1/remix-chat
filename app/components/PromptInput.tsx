@@ -4,10 +4,13 @@ import type { IPrompt } from '~/types';
 function PromptInput({
   prompt,
   index,
+  setSelectedId,
 }: {
   prompt: IPrompt;
   index: number;
+  setSelectedId: (id: string | null) => void;
 }) {
+  console.log({ prompt });
   const [left, setLeft] = React.useState(prompt.x);
   const [top, setTop] = React.useState(prompt.y);
   const [origin, setOrigin] = React.useState<{ x: number; y: number } | null>(
@@ -15,6 +18,11 @@ function PromptInput({
   );
   const [width, setWidth] = React.useState(100);
   const [charsTyped, setCharsTyped] = React.useState(0);
+
+  React.useEffect(() => {
+    setLeft(prompt.x);
+    setTop(prompt.y);
+  }, [prompt.x, prompt.y]);
 
   React.useEffect(() => {
     let newWidth = 100;
@@ -44,6 +52,7 @@ function PromptInput({
         autoFocus
         onMouseDown={(e) => {
           e.stopPropagation();
+          setSelectedId(prompt.id);
           setOrigin({
             x: e.clientX,
             y: e.clientY,
@@ -51,6 +60,7 @@ function PromptInput({
         }}
         onMouseUp={(e) => {
           e.stopPropagation();
+          setSelectedId(null);
           setOrigin(null);
         }}
         onMouseMove={(e) => {

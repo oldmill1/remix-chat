@@ -2,7 +2,6 @@ import { matchSorter } from 'match-sorter';
 // @ts-ignore - no types, but it's a tiny function
 import sortBy from 'sort-by';
 import invariant from 'tiny-invariant';
-import { v4 as uuidv4 } from 'uuid';
 
 type PromptMutation = {
   id?: string;
@@ -86,43 +85,71 @@ export async function deletePrompt(id: string) {
 
 // Add your mock prompts here
 [
-  { promptText: 'Favorite color?', x: 100, y: 50 },
   {
+    id: '8f112fb7-e55b-4bb6-b969-bdcbdc7f1905',
+    promptText: 'Favorite color?',
+    x: 100,
+    y: 50,
+  },
+  {
+    id: 'd9a7c8e8-08b7-4d4d-9a9e-35c3d8d0b9b1',
     promptText:
       'Describe your ideal vacation in a tropical paradise. Imagine the sun, the beach, and the endless cocktails.',
     x: 200,
     y: 100,
   },
-  { promptText: 'Stress coping?', x: 300, y: 150 },
   {
+    id: 'c1a2f3e1-4f5d-6e7a-8b9c-0d1e2f3a4b5c',
+    promptText: 'Stress coping?',
+    x: 300,
+    y: 150,
+  },
+  {
+    id: 'a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890',
     promptText: "What's your go-to comfort food when you're feeling down?",
     x: 400,
     y: 200,
   },
   {
+    id: 'f6e5d4c3-b2a1-0987-6f5e-4d3c2b1a0987',
     promptText: 'Name a book that changed your life. How did it impact you?',
     x: 150,
     y: 250,
   },
-  { promptText: 'Career goals?', x: 250, y: 300 },
   {
+    id: '1a2b3c4d-5e6f-7a9b-8c0d-1e2f3a4b5c6d',
+    promptText: 'Career goals?',
+    x: 250,
+    y: 300,
+  },
+  {
+    id: '9a8b7c6d-5e4f-3a2b-1c0d-e9f8a7b6c5d4',
     promptText:
       'Do you have any pets? If yes, what are their names and what quirky traits do they have?',
     x: 350,
     y: 350,
   },
-  { promptText: 'Season?', x: 450, y: 400 },
   {
+    id: '7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d',
+    promptText: 'Season?',
+    x: 450,
+    y: 400,
+  },
+  {
+    id: '2a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d',
     promptText:
       'How do you define success? Is it money, freedom, influence, creative expression, or something else?',
     x: 100,
     y: 450,
   },
-  { promptText: 'Skill to learn?', x: 200, y: 500 },
-  // ... more prompts
+  {
+    id: '3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d',
+    promptText: 'Skill to learn?',
+    x: 200,
+    y: 500,
+  },
 ].forEach((prompt) => {
   fakePrompts.create({
     ...prompt,
-    id: uuidv4(),
   });
 });

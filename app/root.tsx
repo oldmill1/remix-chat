@@ -1,5 +1,5 @@
 import { cssBundleHref } from '@remix-run/css-bundle';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, ActionFunctionArgs } from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -10,6 +10,27 @@ import {
 } from '@remix-run/react';
 
 import universeStylesHref from '~/styles/universe.css';
+import invariant from 'tiny-invariant';
+import { updatePrompt } from '~/data';
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const promptId = formData.get('promptId') as string;
+  invariant(promptId, 'Missing promptId param');
+  const x = Number(formData.get('x'));
+  const y = Number(formData.get('y'));
+
+  if (!promptId) {
+    return new Response('Missing promptId param', { status: 400 });
+  }
+
+  if (isNaN(x) || isNaN(y)) {
+    return new Response('Invalid x or y', { status: 400 });
+  }
+
+  await updatePrompt(promptId, { x, y });
+  return new Response(null, { status: 200 });
+};
 
 export const links: LinksFunction = () => [
   {
