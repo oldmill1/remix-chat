@@ -10,7 +10,6 @@ function PromptInput({
   index: number;
   setSelectedId: (id: string | null) => void;
 }) {
-  console.log({ prompt });
   const [left, setLeft] = React.useState(prompt.x);
   const [top, setTop] = React.useState(prompt.y);
   const [origin, setOrigin] = React.useState<{ x: number; y: number } | null>(
@@ -18,6 +17,37 @@ function PromptInput({
   );
   const [width, setWidth] = React.useState(100);
   const [charsTyped, setCharsTyped] = React.useState(0);
+
+  React.useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      setSelectedId(null);
+      setOrigin(null);
+    };
+
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (!origin) return;
+      const startX = origin.x;
+      const startY = origin.y;
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+
+      const distanceX = currentX - startX;
+      const distanceY = currentY - startY;
+
+      setLeft((prevLeft) => prevLeft + distanceX);
+      setTop((prevTop) => prevTop + distanceY);
+
+      setOrigin({ x: currentX, y: currentY });
+    };
+
+    document.addEventListener('mouseup', handleGlobalMouseUp);
+    document.addEventListener('mousemove', handleGlobalMouseMove);
+
+    return () => {
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+    };
+  }, [origin, setSelectedId]);
 
   React.useEffect(() => {
     setLeft(prompt.x);
@@ -49,6 +79,7 @@ function PromptInput({
       <input
         style={{ width: `${width}px` }}
         type='text'
+        value={prompt.id}
         autoFocus
         onMouseDown={(e) => {
           e.stopPropagation();
@@ -62,28 +93,6 @@ function PromptInput({
           e.stopPropagation();
           setSelectedId(null);
           setOrigin(null);
-        }}
-        onMouseMove={(e) => {
-          e.stopPropagation();
-          const startX = origin?.x;
-          const startY = origin?.y;
-          const currentX = e.clientX;
-          const currentY = e.clientY;
-
-          if (startX && startY) {
-            const distanceX = currentX - startX;
-            const distanceY = currentY - startY;
-            const newLeft = left + distanceX;
-            const newTop = top + distanceY;
-            setLeft(newLeft);
-            setTop(newTop);
-
-            // Update the origin to the new position for the next calculation
-            setOrigin({
-              x: e.clientX,
-              y: e.clientY,
-            });
-          }
         }}
         onChange={(e) => {
           // Set the width of the input based

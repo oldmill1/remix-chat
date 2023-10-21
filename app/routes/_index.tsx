@@ -19,21 +19,6 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// export const action = async ({ params, request }: ActionFunctionArgs) => {
-//   console.log('Action function called');
-//   invariant(params.promptId, 'Missing promptId param');
-//   const formData = await request.formData();
-//   const x = Number(formData.get('x'));
-//   const y = Number(formData.get('y'));
-//
-//   if (isNaN(x) || isNaN(y)) {
-//     return new Response('Invalid x or y', { status: 400 });
-//   }
-//
-//   await updatePrompt(params.promptId, { x, y });
-//   return new Response(null, { status: 200 });
-// };
-
 export const loader = async () => {
   const rawPrompts = await getPrompts();
   return json({ rawPrompts });
@@ -69,7 +54,6 @@ export default function _index() {
     const y = e.clientY;
     //createPrompt(x, y);
   }
-  console.log({ rawPrompts, prompts, selectedId });
   return (
     <div onClick={handleClick} className='universe' id='universe'>
       {isFullScreen && (
