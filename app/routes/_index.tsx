@@ -1,16 +1,15 @@
-import type { MetaFunction, ActionFunctionArgs } from '@remix-run/node';
+import type { MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
 import React from 'react';
 import PromptInput from '~/components/PromptInput';
 import { useLoaderData } from '@remix-run/react';
-import { getPrompts, updatePrompt } from '~/data';
+import { getPrompts } from '~/data';
 import {
-  promptReducer,
   addPrompt,
+  promptReducer,
   updatePromptPosition,
 } from '~/store/reducers';
-import invariant from 'tiny-invariant';
 
 export const meta: MetaFunction = () => {
   return [
@@ -49,6 +48,34 @@ export default function _index() {
     }
   }, [rawPrompts]);
 
+  const handlePromptUpdate = async (id: string, x: number, y: number) => {
+    try {
+      const response = await fetch('/', {
+        method: 'POST',
+        body: new URLSearchParams({
+          promptId: id,
+          x: x.toString(),
+          y: y.toString(),
+        }),
+      });
+
+      if (response.ok) {
+        console.log({ response });
+        dispatch(
+          updatePromptPosition({
+            id,
+            x,
+            y,
+          }),
+        );
+      } else {
+        console.error('Failed to update prompt position');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
   function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     const x = e.clientX;
     const y = e.clientY;
@@ -61,36 +88,6 @@ export default function _index() {
           <p>Something</p>
         </div>
       )}
-      <button
-        onClick={async () => {
-          try {
-            const response = await fetch('/', {
-              method: 'POST',
-              body: new URLSearchParams({
-                promptId: '8f112fb7-e55b-4bb6-b969-bdcbdc7f1905',
-                x: '100',
-                y: '100',
-              }),
-            });
-
-            if (response.ok) {
-              dispatch(
-                updatePromptPosition({
-                  id: '8f112fb7-e55b-4bb6-b969-bdcbdc7f1905',
-                  x: 1,
-                  y: 1,
-                }),
-              );
-            } else {
-              console.error('Failed to update prompt position');
-            }
-          } catch (error) {
-            console.error('An error occurred:', error);
-          }
-        }}
-      >
-        Hello
-      </button>
       {prompts &&
         !isFullScreen &&
         prompts.map((prompt, index) => (
@@ -99,6 +96,7 @@ export default function _index() {
             index={index}
             prompt={prompt}
             setSelectedId={setSelectedId}
+            handlePromptUpdate={(id, x, y) => handlePromptUpdate(id, x, y)}
           />
         ))}
     </div>

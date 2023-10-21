@@ -5,10 +5,12 @@ function PromptInput({
   prompt,
   index,
   setSelectedId,
+  handlePromptUpdate,
 }: {
   prompt: IPrompt;
   index: number;
   setSelectedId: (id: string | null) => void;
+  handlePromptUpdate: (id: string, x: number, y: number) => void;
 }) {
   const [left, setLeft] = React.useState(prompt.x);
   const [top, setTop] = React.useState(prompt.y);
@@ -93,6 +95,7 @@ function PromptInput({
           e.stopPropagation();
           setSelectedId(null);
           setOrigin(null);
+          handlePromptUpdate(prompt.id, left, top);
         }}
         onChange={(e) => {
           // Set the width of the input based
